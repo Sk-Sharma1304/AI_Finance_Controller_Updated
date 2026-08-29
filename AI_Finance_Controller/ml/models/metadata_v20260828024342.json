@@ -1,0 +1,16 @@
+{
+  "version": "v20260828024342",
+  "trained_at": "2026-08-28T02:43:42.854541+00:00",
+  "features": [
+    "settlement_ratio",
+    "deviation_ratio",
+    "difference_to_payment_ratio"
+  ],
+  "contamination": 0.25,
+  "random_state": 42,
+  "n_estimators": 200,
+  "training_rows": 100,
+  "model_file": "anomaly_model_v20260828024342.joblib",
+  "scaler_file": "anomaly_scaler_v20260828024342.joblib",
+  "training_data_note": "Trained on the bundled synthetic demo dataset. Retrain on real historical transactions before production use."
+}

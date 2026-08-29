@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend-test:
+    name: Backend — lint & test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: AI_Finance_Controller
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: AI_Finance_Controller/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Ensure a trained model exists
+        run: |
+          if [ ! -f ml/models/latest.json ]; then
+            python ml/train_anomaly_model.py
+          fi
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
+
+  frontend-build:
+    name: Frontend — typecheck & build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-interface
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend-interface/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8000
+
+  docker-build:
+    name: Docker images build
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-build]
+    # Builds images to catch Dockerfile breakage on every PR;
+    # pushing to a registry is a separate job gated on `main` --
+    # add one once you have a registry (ECR/GHCR/etc.) to push to.
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build API image
+        run: docker build -t finance-controller-api:${{ github.sha }} ./AI_Finance_Controller
+
+      - name: Build frontend image
+        run: docker build -t finance-controller-frontend:${{ github.sha }} ./frontend-interface

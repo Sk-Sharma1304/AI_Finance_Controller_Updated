@@ -1,0 +1,50 @@
+# AI Finance Controller — local orchestration
+#
+# Run:   docker compose up --build
+# Then:  frontend  -> http://localhost:3000
+#        API       -> http://localhost:8000
+#
+# This is a LOCAL DEV / DEMO compose file, not a production
+# deployment manifest. For real deployment: put Postgres behind a
+# managed service (RDS/Cloud SQL), run the API behind a load
+# balancer with multiple replicas (which requires DATABASE_URL to
+# point at that Postgres, not the SQLite default), and terminate
+# TLS in front of both services. See PRODUCTION_ROADMAP.md.
+
+services:
+  api:
+    build:
+      context: ./AI_Finance_Controller
+    ports:
+      - "8000:8000"
+    environment:
+      # Set these for a real deployment -- left unset here so the
+      # bundled demo works out of the box. See auth.py / rate_limit.py.
+      - API_KEYS=${API_KEYS:-}
+      - RATE_LIMIT_UPLOADS_PER_HOUR=${RATE_LIMIT_UPLOADS_PER_HOUR:-30}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - FRONTEND_ORIGIN=http://localhost:3000
+      - DATABASE_URL=${DATABASE_URL:-sqlite:////app/data_store/finance_controller.db}
+    volumes:
+      # Persists the SQLite file (uploads + audit log) across
+      # container restarts. Remove this volume if DATABASE_URL
+      # points at an external Postgres instead.
+      - api_data:/app/data_store
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend-interface
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+volumes:
+  api_data:
