@@ -345,7 +345,7 @@ Unnecessary LLM usage
 If no OpenAI API key is provided, the system automatically falls back to the rule-based pipeline.
 
 Therefore:
-
+``` text
 LLM available
       ↓
 Rules + ML + LLM investigation
@@ -355,6 +355,7 @@ LLM unavailable
 Rules + ML investigation
 
 The system continues to operate in both cases.
+```
 
 ⚖️ 7. Decision Agent
 
@@ -428,7 +429,7 @@ Model version
 Upload status
 
 The dashboard connects directly to the FastAPI backend.
-
+``` text
 Next.js Frontend
        │
        │ HTTP / JSON
@@ -446,7 +447,9 @@ Multi-Agent Pipeline
        ├── LLM Investigation
        ├── Decision
        └── Action
+```
 📂 Project Structure
+```text
 AI_Finance_Controller_FULLSTACK/
 │
 ├── AI_Finance_Controller/
@@ -515,14 +518,13 @@ AI_Finance_Controller_FULLSTACK/
 ├── docker-compose.yml
 ├── PRODUCTION_ROADMAP.md
 └── README.md
+```
 🛠️ Tech Stack
 Backend
 Python
 FastAPI
 Pandas
 Scikit-learn
-SQLAlchemy
-SQLite
 Pytest
 Machine Learning
 Isolation Forest
@@ -539,7 +541,6 @@ React
 TypeScript
 Tailwind CSS
 Recharts
-DevOps
 Docker
 Docker Compose
 GitHub Actions
@@ -594,49 +595,53 @@ cd AI_Finance_Controller_Updated
 Step 2 — Start the Python Backend
 
 Open Terminal 1:
-
+``` text
 cd AI_Finance_Controller
-
+```
 Create a virtual environment:
 
 Windows
+```text
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+```
 Linux / macOS
+```text
 python3 -m venv .venv
 source .venv/bin/activate
-
+```
 Install dependencies:
-
+```text
 pip install -r requirements.txt
-
+```
 Start FastAPI:
-
+```text
 uvicorn api_server:app --reload --port 8000
-
+```
 Backend:
-
+```text
 http://localhost:8000
-
+```
 Health check:
-
+```text
 http://localhost:8000/api/health
+```
 Step 3 — Start the Frontend
 
 Open Terminal 2:
-
+```text
 cd frontend-interface
 npm install
 npm run dev
-
+```
 Open:
-
+```text
 http://localhost:3000
-
+```
 The dashboard should connect to:
-
+```text
 http://localhost:8000
-
+```
 When the backend is available, the dashboard displays the live backend/model status.
 
 🔑 Optional OpenAI Configuration
@@ -663,22 +668,25 @@ The project still works without an OpenAI key.
 The repository includes Dockerfiles for both services and a Docker Compose configuration.
 
 From the repository root:
-
+```text
 docker compose up --build
-
+```
 Then open:
 
 Frontend:
+```text
 http://localhost:3000
-
+```
 Backend:
+```text
 http://localhost:8000
-
+```
 Health:
+```text
 http://localhost:8000/api/health
-
+```
 Docker Compose runs:
-
+```text
 Frontend container
         │
         ▼
@@ -691,7 +699,7 @@ FastAPI
         │
         ▼
 AI Finance Controller
-
+```
 The default Compose setup uses SQLite with a persistent Docker volume for local/demo use.
 
 🧪 Running Tests
@@ -701,9 +709,9 @@ From:
 AI_Finance_Controller/
 
 run:
-
+```text
 python -m pytest tests/ -v
-
+```
 The test suite covers:
 
 Data validation
@@ -723,13 +731,13 @@ Regression behavior
 The project includes dedicated evaluation scripts.
 
 Run:
-
+```text
 python evaluation/evaluate_anomaly_model.py
-
+```
 and:
-
+```text
 python evaluation/evaluate_reconciliation_model.py
-
+```
 The ML model uses engineered financial ratios rather than relying only on raw transaction fields.
 
 This was an important finding during development:
@@ -743,9 +751,9 @@ The trained model is stored and versioned under:
 AI_Finance_Controller/ml/models/
 
 To retrain:
-
+```text
 python ml/train_anomaly_model.py
-
+```
 The model registry creates a new version rather than overwriting the previous model.
 
 Each pipeline result records the model version used for scoring.
@@ -775,9 +783,9 @@ API-key authentication is supported using:
 X-API-Key
 
 Configure keys through:
-
+```text
 API_KEYS=name:key,name2:key
-
+```
 Authentication is disabled by default for local development.
 
 Rate Limiting
@@ -825,6 +833,7 @@ This creates an auditable record of how the financial decision was produced.
 The system intentionally does not attempt to automate every financial decision.
 
 Instead:
+```text
 
                     Transaction
                          │
@@ -838,6 +847,7 @@ Instead:
             ▼                         │
        Auto Clear                    ▼
                               Human Review
+```
 
 The objective is to reduce unnecessary manual work while preserving human oversight for high-impact or ambiguous cases.
 
@@ -867,16 +877,16 @@ A major architectural improvement in this version is that the pipeline no longer
 Earlier versions relied on the scenario field from the synthetic dataset.
 
 That would not work with real payment exports because:
-
+```text
 Real transaction CSV
         ↓
 Does NOT contain:
 "this transaction is fraudulent"
 "this transaction is duplicated"
 "this transaction has a discrepancy"
-
+```
 The current system instead derives decisions from observable signals:
-
+```text
 Raw Payment Data
       ↓
 Expected Settlement
@@ -892,29 +902,30 @@ Risk Assessment
 Investigation
       ↓
 Decision
-
+```
 This makes the architecture applicable to arbitrary compatible payment CSVs.
 
 🏆 Key Differentiators
 1. Multi-agent financial reasoning
 
 Instead of one generic AI model:
-
+```text
 Specialized financial agents
           ↓
 Evidence aggregation
           ↓
 Final decision
+```
 2. Hybrid AI
 
 The system combines:
-
+```text
 Deterministic Rules
         +
 Machine Learning
         +
 LLM Reasoning
-
+```
 Each component has a different responsibility.
 
 3. LLM as an independent second opinion
@@ -1034,7 +1045,7 @@ Multi-tenant architecture
 🎥 Demo Flow
 
 A typical demo follows this flow:
-
+```text
 1. Open Control Tower
         ↓
 2. Backend health is verified
@@ -1060,27 +1071,29 @@ A typical demo follows this flow:
 12. High-priority cases enter the review queue
         ↓
 13. Audit trail records the decision
+```
 👨‍💻 Development
 
 Backend:
-
+```text
 cd AI_Finance_Controller
 python main.py
-
+```
 Frontend:
-
+```text
 cd frontend-interface
 npm run dev
-
+```
 Tests:
-
+```text
 cd AI_Finance_Controller
 python -m pytest tests/ -v
+```
 📜 License
 
 This project was developed as a hackathon/prototype project.
 
-Add an appropriate open-source license here if you intend to distribute the source under one.
+Anyone can use it for study purpose.
 
 ⭐ Final Note
 
@@ -1091,112 +1104,7 @@ Automate what can be verified, investigate what is uncertain, and involve a huma
 
 ---
 
-## One important change from your existing README
 
-Your **current README says this**:
-
-> `anomaly_agent.py` trains a fresh IsolationForest on every pipeline run
-
-But that is **no longer accurate for your current code**.
-
-I checked your current ZIP, and your architecture now has:
-
-```text
-ml/train_anomaly_model.py
-        ↓
-trained model
-        ↓
-ml/models/
-        ↓
-anomaly_agent.py loads latest model
-        ↓
-prediction
-
-So the new README correctly describes it as a trained + versioned ML model.
-
-That's an important correction because a technical reviewer could otherwise ask:
-
-"Why are you retraining your anomaly detector every API request?"
-
-and your current implementation doesn't actually have that problem anymore.
-
-What I would add next
+"Why am I retraining my anomaly detector every API request?"
 
 Since this is going on GitHub for the Razorpay Buildathon, I'd make the top of the README even more impressive by adding screenshots/GIFs of your dashboard.
-
-For example:
-
-# AI Finance Controller
-
-[ Dashboard Screenshot ]
-
-AI-powered financial control tower...
-
-Then:
-
-## 🚀 Demo
-
-[5-second GIF showing CSV upload → processing → results]
-
-Then the architecture.
-
-That makes the repo immediately understandable to a judge.
-
-Also add a "Key Results" section
-
-Right below the Solution section, something like:
-
-## 📊 Key Results
-
-| Capability | Result |
-|---|---|
-| Transactions processed | 100+ |
-| Financial control stages | 8 |
-| ML model | Isolation Forest |
-| ML model | Trained + versioned |
-| LLM investigation | Optional |
-| Human escalation | Supported |
-| Audit trail | Supported |
-| CSV upload | Supported |
-| Async processing | Supported |
-| Automated tests | 33 |
-| Docker | Supported |
-| CI/CD | GitHub Actions |
-
-But only put numerical accuracy/precision/F1 numbers in the README if they correspond to the final version of the model and evaluation code. Your ZIP contains a methodology correction compared with some of the older metrics we discussed, so I would not blindly copy the earlier 0.8 F1 numbers into the README.
-
-Your README should ultimately tell this story:
-
-Problem
-
-Financial teams cannot manually investigate every settlement exception.
-
-↓
-
-Solution
-
-AI Finance Controller creates an automated financial control layer.
-
-↓
-
-How
-
-Rules + ML + LLM + multi-agent orchestration.
-
-↓
-
-Safety
-
-Validation + risk scoring + independent LLM opinion + human escalation + audit trail.
-
-↓
-
-Engineering
-
-FastAPI + Next.js + trained/versioned ML + database + Docker + tests + CI.
-
-↓
-
-Outcome
-
-Routine transactions are cleared automatically, while ambiguous/high-risk cases are surfaced to humans with evidence.
