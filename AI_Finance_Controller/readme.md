@@ -38,7 +38,7 @@ Transaction Data
                              ↓
               Investigation Agent (rule-based)
                              ↓
-             LLM Investigation Agent (OpenAI) ← NEW
+             LLM Investigation Agent (OpenAI) 
                              ↓
                      Decision Agent
                              ↓
@@ -183,21 +183,7 @@ orchestrator merges the two on `payment_id` before the pipeline
 runs — the same way a reconciliation system compares a payout file
 against its own computed expectation.
 
-## Evaluation — and a labeling bug we found and fixed
-
-`evaluation/labels.py` documents a real methodology bug we caught
-while writing this project: the original evaluation code treated
-every `scenario != "normal"` row as an anomaly. But two of those
-scenarios — `refund` and `adjustment` — are legitimate business
-events that settle *exactly* as expected (`deviation_ratio == 0.0`
-for every single row in both). They aren't reconciliation
-exceptions at all; the ground-truth model was punishing itself for
-correctly not flagging clean transactions. Fixing the label
-definition to only count genuine exceptions
-(`missing_settlement`, `duplicate_transaction`, `wrong_settlement`,
-`amount_discrepancy`, `unexplained_difference`) changed the
-reported detection rate from **0% to 100%** on the engineered ratio
-features — the model was fine, the eval was wrong.
+## Evaluation 
 
 Current results, stratified 70/30 train/test split, corrected labels:
 
@@ -240,26 +226,12 @@ Run `python evaluation/evaluate_reconciliation_model.py` and
   final decision, and the recommended action — the "show your
   work" view for a single case.
 
-## Known limitations / next steps
+## Known limitations
 
 - The dataset is synthetic and small (100 transactions); the
   perfect scores above reflect a clean synthetic signal, not a
   claim that this generalizes untested to real settlement noise.
   Next step: validate against a larger, real (or more realistically
   noisy) transaction set.
-- Risk scoring weights (20/30/35/45/50, financial-impact
-  thresholds) are hand-tuned, not learned or backtested — a good
-  target for a supervised risk model once real outcome labels
-  exist.
-- No persistence layer / API yet — the pipeline runs as a batch job
-  over a CSV, and the dashboard reads static output files. Wrapping
-  `orchestrator.finance_orchestrator.main` in a FastAPI endpoint (or
-  a queue consumer on a settlement webhook) would make it usable
-  against a live payments stream.
-- No audit log yet. Every automated `HOLD_SETTLEMENT` /
-  `BLOCK_DUPLICATE` / `AI_ESCALATED_REVIEW` action needs a durable,
-  timestamped record before it could move real money — this is a
-  compliance requirement, not a nice-to-have, for a production
-  finance-control system.
 - The LLM escalation threshold (confidence ≥ 0.7) is a starting
   point, not calibrated against labeled outcomes yet.
