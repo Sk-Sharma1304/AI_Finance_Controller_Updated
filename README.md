@@ -1100,11 +1100,3 @@ Anyone can use it for study purpose.
 AI Finance Controller is built around a simple principle:
 
 Automate what can be verified, investigate what is uncertain, and involve a human when the system cannot confidently resolve the financial decision.
-
-
----
-
-
-"Why am I retraining my anomaly detector every API request?"
-
-Since this is going on GitHub for the Razorpay Buildathon, I'd make the top of the README even more impressive by adding screenshots/GIFs of your dashboard.
