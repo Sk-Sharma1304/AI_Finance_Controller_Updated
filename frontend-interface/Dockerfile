@@ -15,7 +15,7 @@ RUN npm ci --no-audit --no-fund
 
 FROM node:20-slim AS builder
 WORKDIR /app
-ARG NEXT_PUBLIC_API_URL=http://localhost:8000
+ARG NEXT_PUBLIC_API_URL=https://ai-finance-controller-api-t9v1.onrender.com
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -37,9 +37,11 @@ COPY --from=builder /app/public ./public
 
 USER appuser
 
-EXPOSE 3000
+ENV PORT=10000
+ENV HOSTNAME="0.0.0.0"
+
+EXPOSE 10000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
-
+    CMD node -e "require('http').get('http://localhost:10000', r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1))"
 CMD ["node", "server.js"]
