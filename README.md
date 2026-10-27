@@ -21,8 +21,7 @@ AI_Finance_Controller/  Python ML pipeline + FastAPI bridge (the "backend")
 - The Next.js frontend (`frontend-interface/`) calls that API on page
   load. If the API isn't running, it falls back to a bundled
   TypeScript simulation of the same pipeline over static demo data, so
-  the UI never breaks — but you want the real backend running for the
-  "Live model" badge and real trained-model output.
+  the UI never breaks 
 
 ## Quick start
 
