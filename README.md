@@ -234,13 +234,13 @@ The model operates on engineered financial features rather than simply looking a
 
 Examples of engineered signals include:
 
-fee_ratio
-tax_ratio
-refund_ratio
-adjustment_ratio
-settlement_ratio
-settlement_deviation_ratio
-absolute_deviation_ratio
+fee_ratio,
+tax_ratio,
+refund_ratio,
+adjustment_ratio,
+settlement_ratio,
+settlement_deviation_ratio,
+absolute_deviation_ratio.
 Why Isolation Forest?
 
 Isolation Forest is suitable for this problem because many financial anomalies are rare and labeled examples may be limited.
@@ -249,10 +249,10 @@ It allows the system to identify unusual behavior without requiring every possib
 
 The model is:
 
-Trained offline
-Versioned
-Persisted
-Loaded during inference
+Trained offline,
+Versioned,
+Persisted,
+Loaded during inference.
 Attached to every scored transaction through anomaly_model_version
 4. Risk Assessment Agent
 
@@ -260,21 +260,21 @@ Converts financial evidence into a risk score.
 
 The agent considers signals such as:
 
-Reconciliation severity
-Financial impact
-Duplicate detection
-ML anomaly signal
-Exception evidence
+Reconciliation severity,
+Financial impact,
+Duplicate detection,
+ML anomaly signal,
+Exception evidence.
 
 The result includes:
 
 Risk Score: 0 – 100
 
 Risk Level:
-LOW
-MEDIUM
-HIGH
-CRITICAL
+LOW,
+MEDIUM,
+HIGH,
+CRITICAL.
 5. Investigation Agent
 
 The rule-based investigation agent combines the available evidence and produces:
