@@ -204,11 +204,11 @@ Actual Settlement
 
 and generates reconciliation signals such as:
 
-Settlement deviation
-Deviation ratio
-Reconciliation status
-Severity
-Financial impact
+Settlement deviation,
+Deviation ratio,
+Reconciliation status,
+Severity,
+Financial impact.
 
 2. Duplicate Detection Agent
 
